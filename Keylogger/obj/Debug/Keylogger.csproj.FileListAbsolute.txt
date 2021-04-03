@@ -1,0 +1,9 @@
+C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\Keylogger.exe.config
+C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\Keylogger.exe
+C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\Keylogger.pdb
+C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.csprojAssemblyReference.cache
+C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.Properties.Resources.resources
+C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.csproj.GenerateResource.cache
+C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.csproj.CoreCompileInputs.cache
+C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.exe
+C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.pdb
