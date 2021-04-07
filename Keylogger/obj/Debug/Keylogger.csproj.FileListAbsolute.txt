@@ -11,3 +11,5 @@ C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\KeystrokeAPI.dll
 C:\Users\cleme\Desktop\Keylogger\Keylogger\obj\Debug\Keylogger.csproj.CopyComplete
 C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\SharpClipboard.dll
 C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\SharpClipboard.xml
+C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\Newtonsoft.Json.dll
+C:\Users\cleme\Desktop\Keylogger\Keylogger\bin\Debug\Newtonsoft.Json.xml

