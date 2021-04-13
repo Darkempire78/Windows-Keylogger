@@ -37,6 +37,12 @@ string serverArg = "log";
 - [ ] Install the keylogger from a facade application
 - [ ] Improve the specific country keyboard support
 
+## Discord
+
+Join the Discord server !
+
+[![](https://i.imgur.com/UfyvtOL.png)](https://discord.gg/sPvJmY7mcV)
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
